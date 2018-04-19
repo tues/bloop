@@ -6,10 +6,11 @@ import java.util.Optional
 import java.io.File
 
 import bloop.io.{AbsolutePath, Paths}
-import bloop.logging.Logger
+import bloop.logging.{Logger, ProjectLogger}
 import sbt.internal.inc.{FreshCompilerCache, Locate, LoggedReporter, ZincUtil}
 
 case class CompileInputs(
+    projectName: String,
     scalaInstance: ScalaInstance,
     compilerCache: CompilerCache,
     sourceDirectories: Array[AbsolutePath],
@@ -74,7 +75,8 @@ object Compiler {
     val compilers = compileInputs.compilerCache.get(scalaInstance)
     val inputs = getInputs(compilers)
     val incrementalCompiler = ZincUtil.defaultIncrementalCompiler
-    val compilation = incrementalCompiler.compile(inputs, compileInputs.logger)
+    val logger = new ProjectLogger(compileInputs.projectName, compileInputs.logger)
+    val compilation = incrementalCompiler.compile(inputs, logger)
     PreviousResult.of(Optional.of(compilation.analysis()), Optional.of(compilation.setup()))
   }
 }

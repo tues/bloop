@@ -63,6 +63,7 @@ object Tasks {
   ): Task[State] = {
     import state.{logger, compilerCache}
     def toInputs(project: Project, config: ReporterConfig, result: PreviousResult) = {
+      val name = project.name
       val instance = project.scalaInstance
       val sourceDirs = project.sourceDirectories
       val classpath = project.classpath
@@ -74,7 +75,7 @@ object Tasks {
       val cwd = state.build.origin.getParent
       val reporter = new Reporter(logger, cwd, identity, config)
       // FORMAT: OFF
-      CompileInputs(instance, compilerCache, sourceDirs, classpath, classesDir, target, scalacOptions, javacOptions, classpathOptions, result, reporter, logger)
+      CompileInputs(name, instance, compilerCache, sourceDirs, classpath, classesDir, target, scalacOptions, javacOptions, classpathOptions, result, reporter, logger)
       // FORMAT: ON
     }
 
